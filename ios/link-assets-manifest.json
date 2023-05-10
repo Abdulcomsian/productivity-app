@@ -1,0 +1,21 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/InstrumentSerif-Italic.ttf",
+      "sha1": "d3569695ca4c2e20205ba0a169e4bf11df7b4e62"
+    },
+    {
+      "path": "assets/fonts/InstrumentSerif-Regular.ttf",
+      "sha1": "262cfcd892a966b203fc133755e90aecac60632b"
+    },
+    {
+      "path": "assets/fonts/Mofista-Italic.ttf",
+      "sha1": "f5aef4989149c1b9e11f2d123e87c94a817f2dd2"
+    },
+    {
+      "path": "assets/fonts/Mofista.ttf",
+      "sha1": "5030bcc182fe72f8a629ca1c29edd2cd61185cc3"
+    }
+  ]
+}
