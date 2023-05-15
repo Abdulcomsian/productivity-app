@@ -40,7 +40,7 @@ const Settings = ({navigation}) => {
   const [backgroundColor, setBackgroundColor] = useState('#FDF4EC');
   const [cardColor, setCardColor] = useState('#E5D8CE');
   const [headingColor, setHeadingColor] = useState('#000000');
-  const [mainTextColor, setMainTextColor] = useState('#E5D8CE');
+  const [mainTextColor, setMainTextColor] = useState('#fff');
   const [subTextColor, setSubTextColor] = useState('#000');
 
   const {...colors} = React.useContext(AuthContext);
@@ -112,29 +112,29 @@ const Settings = ({navigation}) => {
   };
 
   //CustomView function is used for custom heading that we used multiple times
-  const CustomView = ({heading, backgroundColor, onPress}) => {
+  const CustomView = ({heading, backgroundColor, onPress,borderColor}) => {
     return (
       <View
         style={{
           flexDirection: 'row',
           paddingVertical: 10,
           width: '100%',
-          marginTop: 20,
+          marginTop: 10,
           justifyContent: 'space-between',
 
           alignItems: 'center',
         }}>
-        <Text style={{fontSize: 14, color: colors.mainTextColor}}>
+        <Text style={{fontSize: 14,fontWeight:'600', color: colors.mainTextColor}}>
           {heading}
         </Text>
         <TouchableOpacity
           onPress={onPress}
           style={{
-            width: 30,
-            height: 30,
+            width: 25,
+            height: 25,
             borderWidth: 1,
-            borderColor: '#000',
-            borderRadius: 50,
+            borderColor:borderColor,
+            borderRadius: 7,
             backgroundColor: backgroundColor,
           }}
         />
@@ -202,7 +202,20 @@ const Settings = ({navigation}) => {
           />
         </View>
 
+    <View style={{borderRadius:5,backgroundColor:colors.cardColor,paddingHorizontal:10}}>
+
+    <Text
+            style={{
+              fontSize: 24,
+              marginTop:15,
+              color: colors.headingColor,
+              fontFamily: fonts['Mofista-Italic'],
+            }}>
+            colours
+          </Text>
+
         <CustomView
+        borderColor={'transparent'}
           onPress={() => {
             setHeadingName('Main Color');
             setShowModal(true);
@@ -211,6 +224,7 @@ const Settings = ({navigation}) => {
           backgroundColor={colors.backgroundColor}
         />
         <CustomView
+        borderColor={'#ffffff'}
           onPress={() => {
             setHeadingName('Secondary Color');
             setShowModal(true);
@@ -219,6 +233,7 @@ const Settings = ({navigation}) => {
           backgroundColor={colors.cardColor}
         />
         <CustomView
+        borderColor={'transparent'}
           onPress={() => {
             setHeadingName('Title Color');
             setShowModal(true);
@@ -227,6 +242,7 @@ const Settings = ({navigation}) => {
           backgroundColor={colors.headingColor}
         />
         <CustomView
+        borderColor={'transparent'}
           onPress={() => {
             setHeadingName('Main Text Color');
             setShowModal(true);
@@ -235,6 +251,7 @@ const Settings = ({navigation}) => {
           backgroundColor={colors.mainTextColor}
         />
         <CustomView
+        borderColor={'transparent'}
           onPress={() => {
             setHeadingName('Sub Text Color');
             setShowModal(true);
@@ -244,19 +261,20 @@ const Settings = ({navigation}) => {
         />
 
         <TouchableOpacity
-          style={{...styles.buttonStyle, backgroundColor: colors.cardColor}}
+          style={{...styles.buttonStyle, backgroundColor: colors.backgroundColor}}
           activeOpacity={0.5}
           onPress={() => saveThemeValue(1)}>
           <Text style={{...styles.buttonTextStyle, color: colors.headingColor}}>
             Save Changes
           </Text>
         </TouchableOpacity>
+    </View>
 
-        <Text style={{left: 15, color: colors.mainTextColor}}>
-          Live Preview
+        <Text style={{left: 15,marginTop:15,fontSize:20,fontFamily:fonts['Mofista'], color: colors.headingColor}}>
+          live preview
         </Text>
 
-        <View style={{...styles.previewCard, backgroundColor: backgroundColor}}>
+        <View style={{...styles.previewCard,borderColor:colors.subTextColor, backgroundColor: backgroundColor}}>
           <View
             style={{
               width: '100%',
@@ -267,7 +285,7 @@ const Settings = ({navigation}) => {
             }}>
             <Text
               style={{
-                fontSize: 20,
+                fontSize: 24,
                 color: headingColor,
                 fontFamily: fonts['Mofista-Italic'],
               }}>
@@ -276,19 +294,19 @@ const Settings = ({navigation}) => {
 
             <Entypo
               onPress={() => navigation.toggleDrawer()}
-              style={{fontSize: 22, color: headingColor}}
+              style={{fontSize: 24, color: headingColor}}
               name={'menu'}
             />
           </View>
 
-          <Text style={{color: mainTextColor}}>Profile</Text>
+          <Text style={{color: headingColor,fontSize:14,fontFamily:fonts['Mofista']}}>Profile</Text>
 
           <View style={{...styles.cardview, backgroundColor: cardColor}}>
             <Text
               style={{
-                fontSize: 14,
+                fontSize: 18,
                 left: 15,
-                color: subTextColor,
+                color: mainTextColor,
                 fontFamily: fonts['Mofista-Italic'],
               }}>
               {'Projects'}
@@ -318,7 +336,7 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 10,
+    borderRadius: 5,
     marginLeft: 35,
     marginRight: 35,
     marginTop: 40,
@@ -337,22 +355,25 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
     paddingVertical: 10,
-    borderRadius: 10,
+    borderRadius: 5,
     width: '100%',
   },
   previewCard: {
-    borderRadius: 15,
+    borderRadius: 10,
     width: '90%',
     alignSelf: 'center',
     paddingVertical: 15,
     paddingHorizontal: 15,
+    borderWidth:1,
+    borderColor:'red',
+    borderStyle:'dotted',
     marginTop: 15,
-    elevation: 1,
+    //elevation: 1,
     height: 150,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
+    // shadowColor: '#000',
+    // shadowOffset: {width: 0, height: 1},
+    // shadowOpacity: 0.3,
+    // shadowRadius: 2,
   },
 });
 

@@ -1,11 +1,15 @@
 import React, {useEffect, useContext, useState} from 'react';
-import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {SafeAreaView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {fonts} from '../../utills/fonts';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Projects from './components/Projects';
 import Negotiable from './components/Negotiable';
 import QuickTicks from './components/QuickTicks';
 import QuickTasks from './components/QuickTasks';
+
+import Box from '../../images/ic_box.svg'
+import TickBox from '../../images/ic_tickbox.svg'
+
 
 import {openDatabase} from 'react-native-sqlite-storage';
 
@@ -80,19 +84,21 @@ const Home = ({navigation}) => {
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: colors.backgroundColor}}>
+      
       <View style={{marginHorizontal: 20}}>
+        
         <View style={styles.mainCard}>
           <Text style={{...styles.headingColor, color: colors.headingColor}}>
             Katie’s Planner
           </Text>
           <Entypo
             onPress={() => navigation.toggleDrawer()}
-            style={{fontSize: 22, color: colors.headingColor}}
+            style={{fontSize: 24, color: colors.headingColor}}
             name={'menu'}
           />
         </View>
 
-        <Text style={{...styles.subHeading, color: colors.mainTextColor}}>
+        <Text style={{...styles.subHeading, color: colors.headingColor}}>
           Today
         </Text>
 
@@ -134,6 +140,7 @@ const Home = ({navigation}) => {
           }}
           isOpen={isQTasks}
         />
+
       </View>
     </SafeAreaView>
   );

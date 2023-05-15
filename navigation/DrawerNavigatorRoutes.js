@@ -32,7 +32,7 @@ const SecondScreenStack = () => {
       initialRouteName="Setting"
       screenOptions={{headerShown: false}}>
       <Stack.Screen name="Setting" component={Settings} />
-      <Stack.Screen name="Profile" component={Profile} />
+      {/* <Stack.Screen name="Profile" component={Profile} /> */}
     </Stack.Navigator>
   );
 };
@@ -46,7 +46,7 @@ const DrawerNavigatorRoutes = props => {
         drawerStyle: {
           fontFamily: fonts['Mofista'],
           backgroundColor: '#FDF4EC', //Set Drawer background
-          width: 250, //Set Drawer width
+          width: 200, //Set Drawer width
         },
         drawerItemStyle: {
           fontFamily: fonts['Mofista'],
@@ -54,31 +54,34 @@ const DrawerNavigatorRoutes = props => {
         },
         drawerLabelStyle: {
           color: '#000000',
+          fontSize:24,
+          textAlign:'right',
           fontFamily: fonts['Mofista'],
         },
       }}
       drawerContent={CustomSidebarMenu}>
       <Drawer.Screen
-        name="Planner"
+        name="planner"
         options={{
           headerShown: false,
         }}
         component={FirstScreenStack}
       />
+        {/* <Drawer.Screen
+        name="account"
+        options={{
+          headerShown: false,
+        }}
+        component={FirstScreenStack}
+      /> */}
       <Drawer.Screen
-        name="Settings"
+        name="settings"
         options={{
           headerShown: false,
         }}
         component={SecondScreenStack}
       />
-      <Drawer.Screen
-        name="Profile"
-        options={{
-          headerShown: false,
-        }}
-        component={FirstScreenStack}
-      />
+    
     </Drawer.Navigator>
   );
 };

@@ -11,7 +11,8 @@ import {
 import {fonts} from '../../../utills/fonts';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
-
+import Box from '../../../images/ic_box.svg';
+import TickBox from '../../../images/ic_tickbox.svg';
 import {openDatabase} from 'react-native-sqlite-storage';
 import {AuthContext} from '../../../utills/Context';
 
@@ -117,6 +118,7 @@ const QuickTasks = ({onPress, isOpen}) => {
               left: 10,
               paddingVertical: 15,
               fontFamily: fonts['Mofista'],
+              fontSize: 20,
               color: colors.headingColor,
             }}>
             {item.task_id}.
@@ -127,28 +129,22 @@ const QuickTasks = ({onPress, isOpen}) => {
               width: '70%',
               paddingVertical: 15,
               fontFamily: fonts['Mofista'],
+              fontSize: 18,
               color: colors.headingColor,
             }}>
             {item.task_name}
           </Text>
           <TouchableOpacity
-            style={{
-              borderWidth: 2,
-              left: 10,
-              borderColor: colors.headingColor,
-              width: 20,
-              height: 20,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
+            style={{paddingVertical:9}}
             onPress={() => editTaskName(item.task_id, 2)}>
-            <Feather
-              style={{
-                color: item.task_status ? '#000' : 'transparent',
-                fontSize: 16,
-              }}
-              name={'check'}
-            />
+            {item.task_status ? (
+              <TickBox style={{bottom:5}} height={30} width={30} />
+
+            ) : (
+              <Box style={{bottom:5}} height={30} width={30} />
+
+
+            )}
           </TouchableOpacity>
         </View>
       ) : (
@@ -184,7 +180,7 @@ const QuickTasks = ({onPress, isOpen}) => {
   return (
     <View style={styles.container}>
       <View style={{...styles.cardview, backgroundColor: colors.cardColor}}>
-        <TouchableOpacity onPress={onPress} style={{width: '80%', padding: 20}}>
+        <TouchableOpacity onPress={onPress} style={{left:5,width: '80%', paddingVertical: 18,paddingHorizontal:5}}>
           <Text style={{...styles.headingStyle, color: colors.headingColor}}>
             {'Quick Tasks'}
           </Text>
@@ -237,7 +233,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: '98%',
   },
-  headingStyle: {fontSize: 14, fontFamily: fonts['Mofista-Italic']},
+  headingStyle: {fontSize: 18, fontFamily: fonts['Mofista-Italic']},
 
   viewstyle: {
     marginTop: 10,

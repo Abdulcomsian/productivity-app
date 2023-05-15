@@ -23,8 +23,11 @@ const CustomSidebarMenu = (props) => {
         <DrawerItemList {...props} />
         <DrawerItem
           label={({color}) => 
-            <Text style={{color: '#000000',fontFamily:fonts['Mofista']}}>
-              Logout
+            <Text style={{ color: '#000000',
+            fontSize:24,
+            textAlign:'right',
+            fontFamily: fonts['Mofista'],}}>
+              logout
             </Text>
           }
           onPress={() => {
