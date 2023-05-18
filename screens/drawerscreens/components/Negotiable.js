@@ -72,7 +72,7 @@ const Negotiable = ({onPress, isOpen}) => {
   };
 
   //editTaskName function will update selected task from table
-  const editTaskName = (taskId, taskno) => {
+  const editTaskName = (taskId, taskno,task_status) => {
     setIsLoading(true);
     var date = new Date().toLocaleString();
     const updatedArray = [...data]; // create a copy of the original array
@@ -84,7 +84,7 @@ const Negotiable = ({onPress, isOpen}) => {
           'UPDATE negotiables set task_name=?, task_status=? , task_edit_status=?, date=? where task_id=?',
           [
             taskToUpdate.task_name.toString(),
-            taskno == 2 ? true : false,
+            taskno == 2 ? !task_status : false,
             true,
             date.slice(0, 10),
             taskId,
@@ -125,7 +125,7 @@ const Negotiable = ({onPress, isOpen}) => {
               width: '15%',
               left: 10,
               paddingVertical: 15,
-              fontSize: 20,
+              fontSize: 22,
               fontFamily: fonts['Mofista'],
               color: colors.headingColor,
             }}>
@@ -137,14 +137,14 @@ const Negotiable = ({onPress, isOpen}) => {
               width: '70%',
               paddingVertical: 15,
               fontFamily: fonts['Mofista'],
-              fontSize: 18,
+              fontSize: 22,
               color: colors.headingColor,
             }}>
             {item.task_name}
           </Text>
           <TouchableOpacity
             style={{paddingVertical:9}}
-            onPress={() => editTaskName(item.task_id, 2)}>
+            onPress={() => editTaskName(item.task_id, 2,item.task_status)}>
             {item.task_status ? (
               <TickBox style={{bottom:5}} height={30} width={30} />
 
@@ -174,7 +174,7 @@ const Negotiable = ({onPress, isOpen}) => {
           />
           <TouchableOpacity
             onPress={
-              () => editTaskName(item.task_id, 1)
+              () => editTaskName(item.task_id, 1,item.task_status)
               //   onPress={() => onSubmitEditText(item.task_id,1)
             }>
             <Feather style={{fontSize: 22}} name={'arrow-right'} />
@@ -204,11 +204,11 @@ const Negotiable = ({onPress, isOpen}) => {
             alignItems: 'center',
           }}>
           {!isOpen ? (
-            <Text>{data.length}</Text>
+            <Text style={{fontSize:22,fontWeight:'bold',fontFamily:fonts['Mofista']}}>{data.length}</Text>
           ) : (
             <Ionicons
               onPress={addProjectsItem}
-              style={{fontSize: 22}}
+              style={{fontSize: 30,alignSelf:'center'}}
               name={'add'}
             />
           )}
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: '98%',
   },
-  headingStyle: {fontSize: 18, fontFamily: fonts['Mofista-Italic']},
+  headingStyle: {fontSize: 22, fontFamily: fonts['Mofista']},
 
   viewstyle: {
     marginTop: 10,

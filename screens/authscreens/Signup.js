@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   TextStyle: {
-    fontFamily: fonts['Mofista-Italic'],
+    fontFamily: fonts['Mofista'],
     fontSize: 14,
     color: Colors.black,
     alignSelf: 'flex-end',

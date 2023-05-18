@@ -26,6 +26,16 @@ const FirstScreenStack = () => {
   );
 };
 
+const ThirdScreenStack = () => {
+  return (
+    <Stack.Navigator
+      initialRouteName="Account"
+      screenOptions={{headerShown: false}}>
+      <Stack.Screen name="Account" component={Profile} />
+    </Stack.Navigator>
+  );
+};
+
 const SecondScreenStack = () => {
   return (
     <Stack.Navigator
@@ -67,13 +77,13 @@ const DrawerNavigatorRoutes = props => {
         }}
         component={FirstScreenStack}
       />
-        {/* <Drawer.Screen
+        <Drawer.Screen
         name="account"
         options={{
           headerShown: false,
         }}
-        component={FirstScreenStack}
-      /> */}
+        component={ThirdScreenStack}
+      />
       <Drawer.Screen
         name="settings"
         options={{

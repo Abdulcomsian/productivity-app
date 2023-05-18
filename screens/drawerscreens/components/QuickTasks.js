@@ -67,7 +67,7 @@ const QuickTasks = ({onPress, isOpen}) => {
   };
 
   //editTaskName function will update selected task from table
-  const editTaskName = (taskId, taskno) => {
+  const editTaskName = (taskId, taskno, task_status) => {
     setIsLoading(true);
     var date = new Date().toLocaleString();
     const updatedArray = [...data]; // create a copy of the original array
@@ -79,7 +79,7 @@ const QuickTasks = ({onPress, isOpen}) => {
           'UPDATE quicktasks set task_name=?, task_status=? , task_edit_status=?, date=? where task_id=?',
           [
             taskToUpdate.task_name.toString(),
-            taskno == 2 ? true : false,
+            taskno == 2 ? !task_status : false,
             true,
             date.slice(0, 10),
             taskId,
@@ -118,7 +118,7 @@ const QuickTasks = ({onPress, isOpen}) => {
               left: 10,
               paddingVertical: 15,
               fontFamily: fonts['Mofista'],
-              fontSize: 20,
+              fontSize: 22,
               color: colors.headingColor,
             }}>
             {item.task_id}.
@@ -129,21 +129,18 @@ const QuickTasks = ({onPress, isOpen}) => {
               width: '70%',
               paddingVertical: 15,
               fontFamily: fonts['Mofista'],
-              fontSize: 18,
+              fontSize: 22,
               color: colors.headingColor,
             }}>
             {item.task_name}
           </Text>
           <TouchableOpacity
-            style={{paddingVertical:9}}
-            onPress={() => editTaskName(item.task_id, 2)}>
+            style={{paddingVertical: 9}}
+            onPress={() => editTaskName(item.task_id, 2, item.task_status)}>
             {item.task_status ? (
-              <TickBox style={{bottom:5}} height={30} width={30} />
-
+              <TickBox style={{bottom: 5}} height={30} width={30} />
             ) : (
-              <Box style={{bottom:5}} height={30} width={30} />
-
-
+              <Box style={{bottom: 5}} height={30} width={30} />
             )}
           </TouchableOpacity>
         </View>
@@ -167,7 +164,7 @@ const QuickTasks = ({onPress, isOpen}) => {
           />
           <TouchableOpacity
             onPress={
-              () => editTaskName(item.task_id, 1)
+              () => editTaskName(item.task_id, 1, item.task_status)
               //   onPress={() => onSubmitEditText(item.task_id,1)
             }>
             <Feather style={{fontSize: 22}} name={'arrow-right'} />
@@ -180,7 +177,14 @@ const QuickTasks = ({onPress, isOpen}) => {
   return (
     <View style={styles.container}>
       <View style={{...styles.cardview, backgroundColor: colors.cardColor}}>
-        <TouchableOpacity onPress={onPress} style={{left:5,width: '80%', paddingVertical: 18,paddingHorizontal:5}}>
+        <TouchableOpacity
+          onPress={onPress}
+          style={{
+            left: 5,
+            width: '80%',
+            paddingVertical: 18,
+            paddingHorizontal: 5,
+          }}>
           <Text style={{...styles.headingStyle, color: colors.headingColor}}>
             {'Quick Tasks'}
           </Text>
@@ -196,11 +200,18 @@ const QuickTasks = ({onPress, isOpen}) => {
             alignItems: 'center',
           }}>
           {!isOpen ? (
-            <Text>{data.length}</Text>
+            <Text
+              style={{
+                fontSize: 22,
+                fontWeight: 'bold',
+                fontFamily: fonts['Mofista'],
+              }}>
+              {data.length}
+            </Text>
           ) : (
             <Ionicons
               onPress={addProjectsItem}
-              style={{fontSize: 22}}
+              style={{fontSize: 30, alignSelf: 'center'}}
               name={'add'}
             />
           )}
@@ -233,7 +244,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: '98%',
   },
-  headingStyle: {fontSize: 18, fontFamily: fonts['Mofista-Italic']},
+  headingStyle: {fontSize: 18, fontFamily: fonts['Mofista']},
 
   viewstyle: {
     marginTop: 10,

@@ -68,7 +68,7 @@ const QuickTicks = ({onPress, isOpen}) => {
   };
 
   //editTaskName function will update selected task from table
-  const editTaskName = (taskId, taskno) => {
+  const editTaskName = (taskId, taskno, task_status) => {
     setIsLoading(true);
     var date = new Date().toLocaleString();
     const updatedArray = [...data]; // create a copy of the original array
@@ -121,8 +121,8 @@ const QuickTicks = ({onPress, isOpen}) => {
               width: '15%',
               left: 10,
               paddingVertical: 15,
-              fontFamily: fonts['Mofista-Italic'],
-              fontSize: 20,
+              fontFamily: fonts['Mofista'],
+              fontSize: 22,
               color: colors.headingColor,
             }}>
             {item.task_id}.
@@ -133,21 +133,18 @@ const QuickTicks = ({onPress, isOpen}) => {
               width: '70%',
               paddingVertical: 15,
               fontFamily: fonts['Mofista'],
-              fontSize: 18,
+              fontSize: 22,
               color: colors.headingColor,
             }}>
             {item.task_name}
           </Text>
           <TouchableOpacity
-            style={{paddingVertical:9}}
-            onPress={() => editTaskName(item.task_id, 2)}>
+            style={{paddingVertical: 9}}
+            onPress={() => editTaskName(item.task_id, 2, item.task_status)}>
             {item.task_status ? (
-              <TickBox style={{bottom:5}} height={30} width={30} />
-
+              <TickBox style={{bottom: 5}} height={30} width={30} />
             ) : (
-              <Box style={{bottom:5}} height={30} width={30} />
-
-
+              <Box style={{bottom: 5}} height={30} width={30} />
             )}
           </TouchableOpacity>
         </View>
@@ -171,7 +168,7 @@ const QuickTicks = ({onPress, isOpen}) => {
           />
           <TouchableOpacity
             onPress={
-              () => editTaskName(item.task_id, 1)
+              () => editTaskName(item.task_id, 1, item.task_status)
               //   onPress={() => onSubmitEditText(item.task_id,1)
             }>
             <Feather style={{fontSize: 22}} name={'arrow-right'} />
@@ -184,8 +181,14 @@ const QuickTicks = ({onPress, isOpen}) => {
   return (
     <View style={styles.container}>
       <View style={{...styles.cardview, backgroundColor: colors.cardColor}}>
-      <TouchableOpacity onPress={onPress} style={{left:5,width: '80%', paddingVertical: 18,paddingHorizontal:5}}>
-
+        <TouchableOpacity
+          onPress={onPress}
+          style={{
+            left: 5,
+            width: '80%',
+            paddingVertical: 18,
+            paddingHorizontal: 5,
+          }}>
           <Text style={{...styles.headingStyle, color: colors.headingColor}}>
             {'Quick Ticks'}
           </Text>
@@ -201,11 +204,18 @@ const QuickTicks = ({onPress, isOpen}) => {
             alignItems: 'center',
           }}>
           {!isOpen ? (
-            <Text>{data.length}</Text>
+            <Text
+              style={{
+                fontSize: 22,
+                fontWeight: 'bold',
+                fontFamily: fonts['Mofista'],
+              }}>
+              {data.length}
+            </Text>
           ) : (
             <Ionicons
               onPress={addProjectsItem}
-              style={{fontSize: 22}}
+              style={{fontSize: 30, alignSelf: 'center'}}
               name={'add'}
             />
           )}
@@ -238,7 +248,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: '98%',
   },
-  headingStyle: {fontSize: 18, fontFamily: fonts['Mofista-Italic']},
+  headingStyle: {fontSize: 22, fontFamily: fonts['Mofista']},
 
   viewstyle: {
     marginTop: 10,

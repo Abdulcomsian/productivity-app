@@ -173,7 +173,7 @@ fetch("https://iopollo.accrualdev.com/api/login", requestOptions)
             </TouchableOpacity>
             <View style={{ marginTop: 1, justifyContent: 'center', alignItems: 'center', padding: 10 }}>
     
-                <Text style={{ fontSize: 16, color: Colors.black ,fontFamily: fonts['Mofista-Italic'],}}>Don’t have an account? <Text onPress={()=>navigation.navigate('RegisterScreen')} style={{ ...styles.SLButton,fontFamily: fonts['Mofista-Italic'], }}>Sign Up</Text></Text>
+                <Text style={{ fontSize: 16, color: Colors.black ,fontFamily: fonts['Mofista'],}}>Don’t have an account? <Text onPress={()=>navigation.navigate('RegisterScreen')} style={{ ...styles.SLButton,fontFamily: fonts['Mofista'], }}>Sign Up</Text></Text>
 
               </View>
          
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
   },
   TextStyle: {
 
-    fontFamily: fonts['Mofista-Italic'],
+    fontFamily: fonts['Mofista'],
     fontSize: 14,
     color: Colors.black,
     alignSelf: 'flex-end', 
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   buttonTextStyle: {
     color: '#FFFFFF',
     paddingVertical: 10,
-    fontFamily: fonts['Mofista-Italic'],
+    fontFamily: fonts['Mofista'],
 
     fontSize: 16,
   },
@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
     color: Colors.black,
     paddingLeft: 15,
     paddingRight: 15,
-    fontFamily: fonts['Mofista-Italic'],
+    fontFamily: fonts['Mofista'],
 
     borderWidth: 1,
     borderRadius: 10,

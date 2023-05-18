@@ -189,15 +189,15 @@ const Settings = ({navigation}) => {
         <View style={styles.topHeadingView}>
           <Text
             style={{
-              fontSize: 20,
+              fontSize: 30,
               color: colors.headingColor,
-              fontFamily: fonts['Mofista-Italic'],
+              fontFamily: fonts['Mofista'],
             }}>
             Settings
           </Text>
           <Entypo
             onPress={() => navigation.toggleDrawer()}
-            style={{fontSize: 22, color: colors.headingColor}}
+            style={{fontSize: 30, color: colors.headingColor}}
             name={'menu'}
           />
         </View>
@@ -209,7 +209,7 @@ const Settings = ({navigation}) => {
               fontSize: 24,
               marginTop:15,
               color: colors.headingColor,
-              fontFamily: fonts['Mofista-Italic'],
+              fontFamily: fonts['Mofista'],
             }}>
             colours
           </Text>
@@ -287,7 +287,7 @@ const Settings = ({navigation}) => {
               style={{
                 fontSize: 24,
                 color: headingColor,
-                fontFamily: fonts['Mofista-Italic'],
+                fontFamily: fonts['Mofista'],
               }}>
               Settings
             </Text>
@@ -307,7 +307,7 @@ const Settings = ({navigation}) => {
                 fontSize: 18,
                 left: 15,
                 color: mainTextColor,
-                fontFamily: fonts['Mofista-Italic'],
+                fontFamily: fonts['Mofista'],
               }}>
               {'Projects'}
             </Text>

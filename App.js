@@ -5,7 +5,7 @@ import React, {useState, useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
-import {StatusBar, SafeAreaView} from 'react-native';
+import {StatusBar,LogBox, SafeAreaView} from 'react-native';
 import {openDatabase} from 'react-native-sqlite-storage';
 
 // Import Screens
@@ -14,7 +14,8 @@ import SplashScreen from './screens/SplashScreen';
 import Signup from './screens/authscreens/Signup';
 import Login from './screens/authscreens/Login';
 import {AuthContext} from './utills/Context';
-
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
 //Database name
 var db = openDatabase({name: 'UserDatabase.db'});
 
@@ -40,6 +41,7 @@ const Auth = () => {
 
 function App() {
   const [colors, setColors] = useState();
+  const [isLoading,setIsLoading] =useState(false)
 
   //below useEffect will get color theme from db
   useEffect(() => {
@@ -118,7 +120,7 @@ function App() {
   return (
     <SafeAreaView style={{flex: 1}}>
       <StatusBar backgroundColor={'#000000'} barStyle={'dark-content'} />
-      <AuthContext.Provider value={{...colors, ...contextColorSetters}}>
+      <AuthContext.Provider value={{...colors, ...contextColorSetters,isLoading,setIsLoading}}>
         <NavigationContainer>
           <Stack.Navigator initialRouteName="SplashScreen">
             {/* SplashScreen which will come once for 5 Seconds */}
