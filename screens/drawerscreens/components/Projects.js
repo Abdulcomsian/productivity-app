@@ -5,6 +5,9 @@ import {
   TextInput,
   Button,
   FlatList,
+  useWindowDimensions,
+  TouchableWithoutFeedback,
+  Dimensions,
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
@@ -13,30 +16,30 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import Box from '../../../images/ic_box.svg';
 import TickBox from '../../../images/ic_tickbox.svg';
+
 import {openDatabase} from 'react-native-sqlite-storage';
 import {AuthContext} from '../../../utills/Context';
+import {SwipeListView} from 'react-native-swipe-list-view';
+import { Colors } from '../../../utills/Colors';
 
 var db = openDatabase({name: 'UserDatabase.db'});
 
 const Projects = ({onPress, isOpen}) => {
   const {...colors} = useContext(AuthContext);
-
   const [isLoading, setIsLoading] = useState(false);
-
+  const {width: screenWidth} = useWindowDimensions();
   const [data, setData] = useState([]);
 
-  // Get All tasks data from projects table
+  // Get All task data from projects table
   useEffect(() => {
-    //  setIsLoading(true);
+    const currentDate = new Date().toLocaleDateString(); // get current date in string format
     db.transaction(tx => {
       tx.executeSql('SELECT * FROM projects', [], (tx, results) => {
-        console.log('resultsresultsresults1', JSON.stringify(results));
-
         var temp = [];
-        for (let i = 0; i < results.rows.length; ++i)
+        for (let i = 0; i < results.rows.length; ++i) {
           temp.push(results.rows.item(i));
+        }
         setFinalData(temp);
-        // setIsLoading(false);
       });
     });
   }, [isLoading]);
@@ -48,7 +51,6 @@ const Projects = ({onPress, isOpen}) => {
     const filteredArray = dataArray.filter(obj => {
       return obj.date == currentDate || obj.task_status != 1;
     });
-
     setData(filteredArray);
   };
 
@@ -72,7 +74,7 @@ const Projects = ({onPress, isOpen}) => {
   };
 
   //editTaskName function will update selected task from table
-  const editTaskName = (taskId, taskno,task_status) => {
+  const editTaskName = (taskId, taskno) => {
     setIsLoading(true);
     var date = new Date().toLocaleString();
     const updatedArray = [...data]; // create a copy of the original array
@@ -84,12 +86,13 @@ const Projects = ({onPress, isOpen}) => {
           'UPDATE projects set task_name=?, task_status=? , task_edit_status=?, date=? where task_id=?',
           [
             taskToUpdate.task_name.toString(),
-            taskno == 2 ? !task_status : false,
+            taskno == 2 ? true : false,
             true,
             date.slice(0, 10),
             taskId,
           ],
           (tx, results) => {
+            console.log('Results.....done', results.rowsAffected);
             if (results.rowsAffected > 0) {
               console.log('Updation .....');
               // onChangeStatus(task_id)
@@ -115,20 +118,30 @@ const Projects = ({onPress, isOpen}) => {
   };
 
   //renderItem function will check condtion and show ui design as desired
-  const renderItem = ({item, index}) => (
-    <>
-      {item.task_edit_status ? (
+
+  const renderItem = (rowData, rowMap) => <VisibleItem rowData={rowData} rowMap={rowMap} />;
+
+  const VisibleItem = props => {
+  const {rowData} = props;
+
+  return (
+    <View
+      style={[
+        styles.rowFront,
+        {height: 60}
+      ]}>
+     {rowData.item.task_edit_status ? (
         <View style={styles.viewstyle}>
           <Text
             style={{
               width: '15%',
               left: 10,
               paddingVertical: 15,
-              fontSize: 22,
               fontFamily: fonts['Mofista'],
+              fontSize: 25,
               color: colors.headingColor,
             }}>
-            {item.task_id}.
+            {rowData.item.task_id}.
           </Text>
 
           <Text
@@ -136,20 +149,18 @@ const Projects = ({onPress, isOpen}) => {
               width: '70%',
               paddingVertical: 15,
               fontFamily: fonts['Mofista'],
-              fontSize: 22,
+              fontSize: 25,
               color: colors.headingColor,
             }}>
-            {item.task_name}
+            {rowData.item.task_name}
           </Text>
           <TouchableOpacity
-            style={{paddingVertical:9}}
-            onPress={() => editTaskName(item.task_id, 2,item.task_status)}>
-            {item.task_status ? (
-              <TickBox style={{bottom:5}} height={30} width={30} />
-
+            style={{paddingVertical: 9}}
+            onPress={() => editTaskName(rowData.item.task_id, 2)}>
+            {rowData.item.task_status ? (
+              <TickBox style={{bottom: 5}} height={30} width={30} />
             ) : (
-              <Box style={{bottom:5}} height={30} width={30} />
-
+              <Box style={{bottom: 5}} height={30} width={30} />
             )}
           </TouchableOpacity>
         </View>
@@ -158,11 +169,11 @@ const Projects = ({onPress, isOpen}) => {
           <TextInput
             autoCapitalize="none"
             returnKeyType="done"
-            onChangeText={newText => handleEditItem(item.task_id, newText)}
+            onChangeText={newText => handleEditItem(rowData.item.task_id, newText)}
             placeholder={'Enter Projects'}
             autoCompleteType="off"
             keyboardType="default"
-            value={item.task_name.toString()}
+            value={rowData.item.task_name.toString()}
             style={{
               paddingVertical: 1,
               width: '80%',
@@ -173,25 +184,144 @@ const Projects = ({onPress, isOpen}) => {
           />
           <TouchableOpacity
             onPress={
-              () => editTaskName(item.task_id, 1,item.task_status)
+              () => editTaskName(rowData.item.task_id, 1)
               //   onPress={() => onSubmitEditText(item.task_id,1)
             }>
             <Feather style={{fontSize: 22}} name={'arrow-right'} />
           </TouchableOpacity>
         </View>
       )}
-    </>
+    </View>
   );
+};
+
+const renderHiddenItem = (rowData, rowMap) => <HiddenItemWithActions rowMap={rowMap} />;
+
+const HiddenItemWithActions = props => {
+  const {rightActionActivated, swipeAnimatedValue, rowData} = props;
+
+  return (
+    <View style={styles.rowBack}>
+      <TouchableWithoutFeedback onPress={() => console.log('delete row')}>
+        <View
+          style={[
+            styles.backBtn,
+            styles.backRightBtn,
+            styles.backRightBtnRight,
+            {
+              width: 60,
+            },
+          ]}>
+          <View style={styles.backBtnInner}>
+            <Text style={styles.backBtnText}>Delete</Text>
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+    </View>
+  );
+};
+
+  // const renderItem = ({item, index}) => (
+  //   <>
+  //     {item.task_edit_status ? (
+  //       <View style={styles.viewstyle}>
+  //         <Text
+  //           style={{
+  //             width: '15%',
+  //             left: 10,
+  //             paddingVertical: 15,
+  //             fontFamily: fonts['Mofista'],
+  //             fontSize: 25,
+  //             color: colors.headingColor,
+  //           }}>
+  //           {item.task_id}.
+  //         </Text>
+
+  //         <Text
+  //           style={{
+  //             width: '70%',
+  //             paddingVertical: 15,
+  //             fontFamily: fonts['Mofista'],
+  //             fontSize: 25,
+  //             color: colors.headingColor,
+  //           }}>
+  //           {item.task_name}
+  //         </Text>
+  //         <TouchableOpacity
+  //           style={{paddingVertical: 9}}
+  //           onPress={() => editTaskName(item.task_id, 2)}>
+  //           {item.task_status ? (
+  //             <TickBox style={{bottom: 5}} height={30} width={30} />
+  //           ) : (
+  //             <Box style={{bottom: 5}} height={30} width={30} />
+  //           )}
+  //         </TouchableOpacity>
+  //       </View>
+  //     ) : (
+  //       <View style={styles.cardview2}>
+  //         <TextInput
+  //           autoCapitalize="none"
+  //           returnKeyType="done"
+  //           onChangeText={newText => handleEditItem(item.task_id, newText)}
+  //           placeholder={'Enter Projects'}
+  //           autoCompleteType="off"
+  //           keyboardType="default"
+  //           value={item.task_name.toString()}
+  //           style={{
+  //             paddingVertical: 1,
+  //             width: '80%',
+  //             backgroundColor: 'transparent',
+  //           }}
+  //           underlineColorAndroid="transparent"
+  //           placeholderTextColor="#000000"
+  //         />
+  //         <TouchableOpacity
+  //           onPress={
+  //             () => editTaskName(item.task_id, 1)
+  //             //   onPress={() => onSubmitEditText(item.task_id,1)
+  //           }>
+  //           <Feather style={{fontSize: 22}} name={'arrow-right'} />
+  //         </TouchableOpacity>
+  //       </View>
+  //     )}
+  //   </>
+  // );
+
+  const onSwipeValueChange = swipeData => {
+    // const { key, value } = swipeData;
+
+    const newData = [...listData];
+    const prevIndex = listData.findIndex(item => item.key === swipeData);
+    newData.splice(prevIndex, 1);
+    setListData(newData);
+  };
+
+  // const renderHiddenItem = data => (
+  //   <View style={styles.viewstyle}>
+  //     <TouchableOpacity
+  //       onPress={() => onSwipeValueChange(data.item.key)}
+  //       style={[styles.backRightBtn, styles.backRightBtnRight]}>
+  //       <Text style={styles.backTextWhite}>Delete</Text>
+  //     </TouchableOpacity>
+  //   </View>
+  // );
 
   return (
     <View style={styles.container}>
       <View style={{...styles.cardview, backgroundColor: colors.cardColor}}>
-      <TouchableOpacity onPress={onPress} style={{left:5,width: '80%', paddingVertical: 18,paddingHorizontal:5}}>
-
+        <TouchableOpacity
+          onPress={onPress}
+          style={{
+            left: 5,
+            width: '80%',
+            paddingVertical: 18,
+            paddingHorizontal: 5,
+          }}>
           <Text style={{...styles.headingStyle, color: colors.headingColor}}>
             {'Projects'}
           </Text>
         </TouchableOpacity>
+
         <View
           style={{
             borderRadius: 50,
@@ -203,11 +333,18 @@ const Projects = ({onPress, isOpen}) => {
             alignItems: 'center',
           }}>
           {!isOpen ? (
-            <Text style={{fontSize:22,fontWeight:'bold',fontFamily:fonts['Mofista']}}>{data.length}</Text>
+            <Text
+              style={{
+                fontSize: 25,
+                fontWeight: 'bold',
+                fontFamily: fonts['Mofista'],
+              }}>
+              {data.length}
+            </Text>
           ) : (
             <Ionicons
               onPress={addProjectsItem}
-              style={{fontSize: 30,alignSelf:'center'}}
+              style={{fontSize: 22}}
               name={'add'}
             />
           )}
@@ -216,15 +353,21 @@ const Projects = ({onPress, isOpen}) => {
 
       <View style={{maxHeight: 300, marginTop: 10, marginBottom: 10}}>
         {isOpen ? (
-          <FlatList
+          <SwipeListView
             data={data}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{paddingBottom: 10}}
-            // inverted={true}
             renderItem={renderItem}
-            keyExtractor={(item, index) => index.toString()}
+            renderHiddenItem={renderHiddenItem}
+            disableRightSwipe
+            rightOpenValue={-Dimensions.get('window').width / 3}
+            stopRightSwipe={-201}
+            rightActivationValue={-200}
+          //  rightActionValue={-screenWidth}
+            swipeToOpenPercent={10}
+            swipeToClosePercent={10}
+            useNativeDriver={false}
           />
-        ) : null}
+        ) : 
+        null}
       </View>
     </View>
   );
@@ -240,13 +383,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: '98%',
   },
-  headingStyle: {fontSize: 22, fontFamily: fonts['Mofista']},
+  headingStyle: {fontSize: 25, fontFamily: fonts['Mofista-Italic']},
 
   viewstyle: {
     marginTop: 10,
     flexDirection: 'row',
     alignSelf: 'center',
     alignItems: 'center',
+    justifyContent: 'center',
     width: '98%',
   },
   cardview2: {
@@ -263,7 +407,7 @@ const styles = StyleSheet.create({
   },
   container: {
     padding: 1,
-    marginTop:20
+    paddingTop: 10,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -284,6 +428,161 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
   },
+    rowFront: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.white,
+  },
+  rowBack: {
+    height: 60
+  },
+  backBtn: {
+    position: 'absolute',
+    bottom: 0,
+    top: 0,
+    justifyContent: 'center',
+  },
+  backRightBtn: {},
+  backRightBtnLeft: {
+    right: 60,
+    backgroundColor: Colors.blue,
+  },
+  backRightBtnRight: {
+    right: 0,
+    backgroundColor: Colors.red,
+  },
+  backBtnInner: {
+    alignItems: 'center',
+  },
+  backBtnText: {
+    color: 'red',
+    marginTop: 2,
+  },
 });
 
 export default Projects;
+
+// import { useState } from 'react';
+
+// import {
+//   // ...
+//   Text,
+//   View,
+//   TouchableWithoutFeedback,
+//   useWindowDimensions,
+//   SafeAreaView,
+//   StyleSheet
+// } from 'react-native';
+// import { Colors } from '../../../utills/Colors';
+// import { SwipeListView } from 'react-native-swipe-list-view';
+// // ...
+
+// const renderItem = (rowData, rowMap) => <VisibleItem rowData={rowData} rowMap={rowMap} />;
+
+// const renderHiddenItem = (rowData, rowMap) => <HiddenItemWithActions rowMap={rowMap} />;
+// const VisibleItem = props => {
+//   const {rowData} = props;
+
+//   return (
+//     <View
+//       style={[
+//         styles.rowFront,
+//         {height: 60}
+//       ]}>
+//       <Text>{rowData.item.text}</Text>
+//     </View>
+//   );
+// };
+
+// const HiddenItemWithActions = props => {
+//   const {rightActionActivated, swipeAnimatedValue, rowData} = props;
+
+//   return (
+//     <View style={styles.rowBack}>
+//       <TouchableWithoutFeedback onPress={() => console.log('delete row')}>
+//         <View
+//           style={[
+//             styles.backBtn,
+//             styles.backRightBtn,
+//             styles.backRightBtnRight,
+//             {
+//               width: 60,
+//             },
+//           ]}>
+//           <View style={styles.backBtnInner}>
+//             <Text style={styles.backBtnText}>Delete</Text>
+//           </View>
+//         </View>
+//       </TouchableWithoutFeedback>
+//     </View>
+//   );
+// };
+
+// const Projects = () => {
+//   // ...
+//   const {width: screenWidth} = useWindowDimensions();
+
+//   const [list, setList] = useState(
+//     [...new Array(20)].map((_, i) => ({
+//       key: `${i}`,
+//       text: `This is list item ${i}`,
+//     })),
+//   );
+
+//   return (
+//     <SafeAreaView style={styles.container}>
+//       <SwipeListView
+//         data={list}
+//         renderItem={renderItem}
+//         renderHiddenItem={renderHiddenItem}
+//         disableRightSwipe
+//         rightOpenValue={-120}
+//         stopRightSwipe={-201}
+//         rightActivationValue={-200}
+//         rightActionValue={-screenWidth}
+//         swipeToOpenPercent={10}
+//         swipeToClosePercent={10}
+//         useNativeDriver={false}
+//       />
+//     </SafeAreaView>
+//   );
+// };
+
+// export default Projects;
+
+// const styles = StyleSheet.create({
+//   // ...
+//   rowFront: {
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     backgroundColor: Colors.white,
+//     borderBottomColor: Colors.grey,
+//     borderBottomWidth: 1,
+//   },
+//   rowBack: {
+//     height: 60
+//   },
+//   backBtn: {
+//     position: 'absolute',
+//     bottom: 0,
+//     top: 0,
+//     justifyContent: 'center',
+//   },
+//   backRightBtn: {},
+//   backRightBtnLeft: {
+//     right: 60,
+//     backgroundColor: Colors.blue,
+//   },
+//   backRightBtnRight: {
+//     right: 0,
+//     backgroundColor: Colors.red,
+//   },
+//   backBtnInner: {
+//     alignItems: 'center',
+//   },
+//   backBtnText: {
+//     color: 'blue',
+//     marginTop: 2,
+//   },
+// });
+
