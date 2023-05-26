@@ -41,6 +41,8 @@ const Auth = () => {
 
 function App() {
   const [colors, setColors] = useState();
+  const [fonts, setFonts] = useState();
+
   const [isLoading,setIsLoading] =useState(false)
 
   //below useEffect will get color theme from db
@@ -55,7 +57,21 @@ function App() {
     });
   }, []);
 
+   //below useEffect will get fonts  from db
+   useEffect(() => {
+    db.transaction(tx => {
+      tx.executeSql('SELECT * FROM fonts_table', [], (tx, results) => {
+        var temp = [];
+        for (let i = 0; i < results.rows.length; ++i)
+          temp.push(results.rows.item(i));
+        updateFonts(temp);
+      });
+    });
+  }, []);
+
   var context1InitialState = {};
+  var fontsInitialState = {};
+
 
   //updateColor function will update color theme to all screens through Context
 
@@ -96,6 +112,38 @@ function App() {
     }
   };
 
+   //updateFonts function will update fonts to all screens through Context
+
+   const updateFonts = arrFonts => {
+    if (arrFonts.length) {
+      fontsInitialState = {
+        boldFont: arrFonts[0].boldFont,
+        regularFont: arrFonts[0].regularFont,
+      };
+      setFonts(fontsInitialState);
+    } else {
+      // if user first time it will insert color theme into color_theme table in db also update app color theme
+      db.transaction(function (tx) {
+        tx.executeSql(
+          'INSERT INTO fonts_table(boldFont,regularFont) VALUES (?,?)',
+          ["Mofista","Mofista"],
+          (tx, results) => {
+            console.log('Results11111111', results.rowsAffected);
+            if (results.rowsAffected > 0) {
+              console.log('Fonts .......Data inserted');
+            }
+          },
+        );
+      });
+
+      fontsInitialState = {
+        boldFont: arrFonts[0].boldFont,
+        regularFont: arrFonts[0].regularFont,
+      };
+      setFonts(fontsInitialState);
+    }
+  };
+
   //setBackgroundColorValue function update colors to all screens through Context
   function setBackgroundColorValue(
     backgroundColor,
@@ -117,10 +165,26 @@ function App() {
     setBackgroundColorValue,
   };
 
+
+   //setBackgroundColorValue function update colors to all screens through Context
+   function setFontsValue(
+    boldFont,
+    regularFont,
+  ) {
+    setFonts({
+      boldFont,
+    regularFont,
+    });
+  }
+
+  const contextFontsSetters = {
+    setFontsValue,
+  };
+
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <StatusBar backgroundColor={'#000000'} barStyle={'dark-content'} />
-      <AuthContext.Provider value={{...colors, ...contextColorSetters,isLoading,setIsLoading}}>
+   <>
+     <StatusBar barStyle="dark-content" backgroundColor="red" />
+      <AuthContext.Provider value={{...colors, ...contextColorSetters,...fonts,...contextFontsSetters,isLoading,setIsLoading}}>
         <NavigationContainer>
           <Stack.Navigator initialRouteName="SplashScreen">
             {/* SplashScreen which will come once for 5 Seconds */}
@@ -146,7 +210,7 @@ function App() {
           </Stack.Navigator>
         </NavigationContainer>
       </AuthContext.Provider>
-    </SafeAreaView>
+      </>
   );
 }
 

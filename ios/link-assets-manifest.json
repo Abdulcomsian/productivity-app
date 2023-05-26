@@ -2,12 +2,12 @@
   "migIndex": 1,
   "data": [
     {
-      "path": "assets/fonts/InstrumentSerif-Italic.ttf",
-      "sha1": "d3569695ca4c2e20205ba0a169e4bf11df7b4e62"
+      "path": "assets/fonts/Lato-Bold.ttf",
+      "sha1": "e87d99a300317fd927c0a512be856b3caf52d61f"
     },
     {
-      "path": "assets/fonts/InstrumentSerif-Regular.ttf",
-      "sha1": "262cfcd892a966b203fc133755e90aecac60632b"
+      "path": "assets/fonts/Lato-Regular.ttf",
+      "sha1": "06775847c3ad5bdc4525009f41aaf585bfcba4c2"
     },
     {
       "path": "assets/fonts/Mofista-Italic.ttf",
@@ -16,6 +16,38 @@
     {
       "path": "assets/fonts/Mofista.ttf",
       "sha1": "5030bcc182fe72f8a629ca1c29edd2cd61185cc3"
+    },
+    {
+      "path": "assets/fonts/Montserrat-Bold.ttf",
+      "sha1": "84158976b050e30c90c9e320689c9ea445b17696"
+    },
+    {
+      "path": "assets/fonts/Montserrat-Regular.ttf",
+      "sha1": "685816f5149c1b62a85088828a43f39fb3269c7b"
+    },
+    {
+      "path": "assets/fonts/OpenSans-Bold.ttf",
+      "sha1": "b4dc84e68228806b968ebe82c7c5b5af77a06d89"
+    },
+    {
+      "path": "assets/fonts/OpenSans-Regular.ttf",
+      "sha1": "4387c5a4c1a4c5bcb5b9b0c67b4a9cab7b3faf26"
+    },
+    {
+      "path": "assets/fonts/PlayfairDisplay-Bold.ttf",
+      "sha1": "8e22430597a1758cd1c8da8e51806faf2ec627b6"
+    },
+    {
+      "path": "assets/fonts/PlayfairDisplay-Regular.ttf",
+      "sha1": "6f28e454f7bddeaa15a560e957573c29ccd7789c"
+    },
+    {
+      "path": "assets/fonts/Roboto-Bold.ttf",
+      "sha1": "3a4a7ff4fdba5317d6941e2d66e629df6c3c8cf3"
+    },
+    {
+      "path": "assets/fonts/Roboto-Regular.ttf",
+      "sha1": "ba879317acdc045b8fa78cb8f948650627d0477c"
     }
   ]
 }

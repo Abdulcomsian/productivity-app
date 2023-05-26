@@ -21,6 +21,7 @@ const SplashScreen = ({navigation}) => {
   //query inside useaeffect will create color_theme table in db
 
   useEffect(() => {
+    //color theme table
     db.transaction(function (txn) {
       txn.executeSql(
         "SELECT name FROM sqlite_master WHERE type='table' AND name='color_theme'",
@@ -37,6 +38,25 @@ const SplashScreen = ({navigation}) => {
         },
       );
     });
+
+    // fonts table
+    db.transaction(function (txn) {
+      txn.executeSql(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='fonts_table'",
+        [],
+        function (tx, res) {
+          console.log('item:', res.rows.length);
+          if (res.rows.length == 0) {
+            txn.executeSql('DROP TABLE IF EXISTS fonts_table', []);
+            txn.executeSql(
+              'CREATE TABLE IF NOT EXISTS fonts_table(font_id INTEGER PRIMARY KEY AUTOINCREMENT, boldFont VARCHAR(20), regularFont VARCHAR(20))',
+              [],
+            );
+          }
+        },
+      );
+    });
+
   }, []);
 
   //below useEffect   //Check if user_id is set or not

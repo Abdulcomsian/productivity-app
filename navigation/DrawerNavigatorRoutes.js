@@ -1,5 +1,5 @@
 // Import React
-import React from 'react';
+import React, { useContext } from 'react';
 
 // Import Navigators from React Navigation
 import {createStackNavigator} from '@react-navigation/stack';
@@ -11,6 +11,7 @@ import Settings from '../screens/drawerscreens/Settings';
 import Profile from '../screens/drawerscreens/Profile';
 import CustomSidebarMenu from '../components/CustomSidebarMenu';
 import {fonts} from '../utills/fonts';
+import { AuthContext } from '../utills/Context';
 // Import Screens
 
 const Stack = createStackNavigator();
@@ -48,25 +49,28 @@ const SecondScreenStack = () => {
 };
 
 const DrawerNavigatorRoutes = props => {
+  const {...fonts} = useContext(AuthContext);
+
+  
   return (
     <Drawer.Navigator
       screenOptions={{
         drawerPosition: 'right',
         drawerType: 'back',
         drawerStyle: {
-          fontFamily: fonts['Mofista'],
+          fontFamily: fonts.boldFont,
           backgroundColor: '#FDF4EC', //Set Drawer background
           width: 200, //Set Drawer width
         },
         drawerItemStyle: {
-          fontFamily: fonts['Mofista'],
+          fontFamily: fonts.boldFont,
           fontWeight: 'bold', //Set Header text style
         },
         drawerLabelStyle: {
           color: '#000000',
           fontSize:24,
           textAlign:'right',
-          fontFamily: fonts['Mofista'],
+          fontFamily: fonts.boldFont,
         },
       }}
       drawerContent={CustomSidebarMenu}>

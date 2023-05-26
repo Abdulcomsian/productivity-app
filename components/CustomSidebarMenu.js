@@ -2,7 +2,7 @@
 // https://aboutreact.com/react-native-login-and-signup/
 
 // Import React and Component
-import React from 'react';
+import React, { useContext } from 'react';
 import {View, Text, Alert, StyleSheet} from 'react-native';
 
 import {
@@ -13,8 +13,11 @@ import {
 
 import AsyncStorage from '@react-native-community/async-storage';
 import { fonts } from '../utills/fonts';
+import { AuthContext } from '../utills/Context';
 
 const CustomSidebarMenu = (props) => {
+  const {...fonts} = useContext(AuthContext);
+
   return (
     <View style={stylesSidebar.sideMenuContainer}>
    
@@ -26,7 +29,7 @@ const CustomSidebarMenu = (props) => {
             <Text style={{ color: '#000000',
             fontSize:24,
             textAlign:'right',
-            fontFamily: fonts['Mofista'],}}>
+            fontFamily: fonts.boldFont,}}>
               logout
             </Text>
           }

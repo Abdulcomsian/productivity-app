@@ -5,7 +5,7 @@
  * @format
  */
 
-import React, {useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -19,8 +19,10 @@ import {
   View,
 } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
-import {fonts} from '../../utills/fonts';
-import {Colors} from '../../utills/Colors';
+import { fonts } from '../../utills/fonts';
+import { Colors } from '../../utills/Colors';
+import Box from '../../images/ic_box.svg';
+import TickBox from '../../images/ic_tickbox.svg';
 import ColorPicker, {
   Panel1,
   Swatches,
@@ -28,12 +30,12 @@ import ColorPicker, {
   OpacitySlider,
   HueSlider,
 } from 'reanimated-color-picker';
-import {AuthContext} from '../../utills/Context';
+import { AuthContext } from '../../utills/Context';
 
-import {openDatabase} from 'react-native-sqlite-storage';
+import { openDatabase } from 'react-native-sqlite-storage';
 
-var db = openDatabase({name: 'UserDatabase.db'});
-const Settings = ({navigation}) => {
+var db = openDatabase({ name: 'UserDatabase.db' });
+const Settings = ({ navigation }) => {
   const [showModal, setShowModal] = useState(false);
   const [finalColor, setFinalColor] = useState('');
   const [headingName, setHeadingName] = useState('');
@@ -42,20 +44,44 @@ const Settings = ({navigation}) => {
   const [headingColor, setHeadingColor] = useState('#000000');
   const [mainTextColor, setMainTextColor] = useState('#fff');
   const [subTextColor, setSubTextColor] = useState('#000');
+  const [isRoboto, setIsRoboto] = useState(false)
+  const [isLatto, setIsLatto] = useState(false)
+  const [isOpenSans, setIsOpenSans] = useState(false)
 
-  const {...colors} = React.useContext(AuthContext);
-  const {setBackgroundColorValue} = React.useContext(AuthContext);
+  const [boldFont, setBoldFont] = useState()
+
+  const [regularFont, setRegularFont] = useState()
 
 
-//openModal function show modal which contain the color platte to select the color
+  const { ...colors } = useContext(AuthContext);
+  const {...fonts} = useContext(AuthContext);
+
+  const { setBackgroundColorValue ,setFontsValue} = useContext(AuthContext);
+
+
+  //openModal function show modal which contain the color platte to select the color
   const openModal = () => {
-    const onSelectColor = ({hex}) => {
+    const onSelectColor = ({ hex }) => {
       // do something with the selected color.
       setFinalColor(hex);
     };
 
+    useEffect(()=>{
+      console.log("fontsfonts",fonts.boldFont)
+     // setFontState(fonts.boldFont)
+      if(fonts.boldFont =='Lato-Bold') {
+        setIsLatto(true)
+      } else if (fonts.boldFont =='OpenSans-Bold') {
+        setIsOpenSans(true)
+      } else if (fonts.boldFont =='Roboto-Bold') {
+        setIsRoboto(true)
+      }
+    },[])
+
     
-//saveColor function save the selected color from platte for selected item
+
+
+    //saveColor function save the selected color from platte for selected item
     const saveColor = () => {
       switch (headingName) {
         case 'Main Color':
@@ -82,9 +108,11 @@ const Settings = ({navigation}) => {
 
     };
 
+
+
     return (
 
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Modal
           style={{
             backgroundColor: 'green',
@@ -95,7 +123,7 @@ const Settings = ({navigation}) => {
           visible={showModal}
           animationType="slide">
           <ColorPicker
-            style={{width: '70%', alignSelf: 'center', marginTop: 50}}
+            style={{ width: '70%', alignSelf: 'center', marginTop: 50 }}
             value="red"
             onComplete={onSelectColor}>
             <Preview />
@@ -111,8 +139,39 @@ const Settings = ({navigation}) => {
     );
   };
 
+  const saveFont = (headingName) => {
+    switch (headingName) {
+      case 'Roboto: Roboto':
+        setIsRoboto(true)
+        setIsLatto(false)
+        setIsOpenSans(false)
+        saveFontsValue('Roboto-Bold','Roboto-Regular',1)
+
+        break;
+      case 'Open Sans: Open Sans':
+        setIsRoboto(false)
+        setIsLatto(false)
+        setIsOpenSans(true)
+        saveFontsValue('OpenSans-Bold','OpenSans-Regular',1)
+
+
+        break;
+      case 'Lato: Lato':
+        setIsRoboto(false)
+        setIsLatto(true)
+        setIsOpenSans(false)
+        saveFontsValue('Lato-Bold','Lato-Regular',1)
+        break;
+      default:
+        break;
+    }
+
+    setShowModal(false);
+
+  };
+
   //CustomView function is used for custom heading that we used multiple times
-  const CustomView = ({heading, backgroundColor, onPress,borderColor}) => {
+  const CustomView = ({ heading, backgroundColor, onPress, borderColor }) => {
     return (
       <View
         style={{
@@ -124,7 +183,7 @@ const Settings = ({navigation}) => {
 
           alignItems: 'center',
         }}>
-        <Text style={{fontSize: 14,fontWeight:'600', color: colors.mainTextColor}}>
+        <Text style={{ fontSize: 14,fontFamily:fonts.regularFont, fontWeight: '600', color: colors.mainTextColor }}>
           {heading}
         </Text>
         <TouchableOpacity
@@ -133,11 +192,41 @@ const Settings = ({navigation}) => {
             width: 25,
             height: 25,
             borderWidth: 1,
-            borderColor:borderColor,
+            borderColor: borderColor,
             borderRadius: 7,
             backgroundColor: backgroundColor,
           }}
         />
+      </View>
+    );
+  };
+
+  //CustomView function is used for custom heading that we used multiple times
+  const CustomFontView = ({ heading, onPress, isChecked }) => {
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          paddingVertical: 10,
+          width: '100%',
+          marginTop: 10,
+          justifyContent: 'space-between',
+
+          alignItems: 'center',
+        }}>
+        <Text style={{ fontSize: 14, fontFamily:fonts.regularFont,fontWeight: '600', color: colors.mainTextColor }}>
+          {heading}
+        </Text>
+        <TouchableOpacity
+          onPress={onPress}
+          style={{
+          }}>
+          {isChecked ?
+            <TickBox style={{ bottom: 5 }} height={30} width={30} />
+            :
+            <Box style={{ bottom: 5 }} height={30} width={30} />
+          }
+        </TouchableOpacity>
       </View>
     );
   };
@@ -181,144 +270,203 @@ const Settings = ({navigation}) => {
     }
   };
 
+  //saveThemeValue function apply selected colortheme to all screens also save in db on button press
+  const saveFontsValue = async (boldFont,regularFont,taskId) => {
+
+    //insert color theme into color_theme database table
+    db.transaction(tx => {
+      tx.executeSql(
+        'UPDATE fonts_table set boldFont=?, regularFont=?  where font_id=?',
+        [
+          boldFont,
+          regularFont,
+          taskId,
+        ],
+        (tx, results) => {
+          if (results.rowsAffected > 0) {
+            console.log('Fonts updated');
+          } else {
+            console.log('Updation Failed');
+          }
+        },
+      );
+    });
+
+    //setFontsValue function update colors to all screens through Context
+    try {
+      setFontsValue(
+        boldFont,
+        regularFont,
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   //here are main design 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: colors.backgroundColor}}>
-    <ScrollView contentContainerStyle={{paddingBottom:40}}>
-    <View style={{marginHorizontal: 20}}>
-        <View style={styles.topHeadingView}>
-          <Text
-            style={{
-              fontSize: 30,
-              color: colors.headingColor,
-              fontFamily: fonts['Mofista'],
-            }}>
-            Settings
-          </Text>
-          <Entypo
-            onPress={() => navigation.toggleDrawer()}
-            style={{fontSize: 30, color: colors.headingColor}}
-            name={'menu'}
-          />
-        </View>
-
-    <View style={{borderRadius:5,backgroundColor:colors.cardColor,paddingHorizontal:10}}>
-
-    <Text
-            style={{
-              fontSize: 24,
-              marginTop:15,
-              color: colors.headingColor,
-              fontFamily: fonts['Mofista'],
-            }}>
-            colours
-          </Text>
-
-        <CustomView
-        borderColor={'transparent'}
-          onPress={() => {
-            setHeadingName('Main Color');
-            setShowModal(true);
-          }}
-          heading={'Main Color'}
-          backgroundColor={colors.backgroundColor}
-        />
-        <CustomView
-        borderColor={'#ffffff'}
-          onPress={() => {
-            setHeadingName('Secondary Color');
-            setShowModal(true);
-          }}
-          heading={'Secondary Color'}
-          backgroundColor={colors.cardColor}
-        />
-        <CustomView
-        borderColor={'transparent'}
-          onPress={() => {
-            setHeadingName('Title Color');
-            setShowModal(true);
-          }}
-          heading={'Title Color'}
-          backgroundColor={colors.headingColor}
-        />
-        <CustomView
-        borderColor={'transparent'}
-          onPress={() => {
-            setHeadingName('Main Text Color');
-            setShowModal(true);
-          }}
-          heading={'Main Text Color'}
-          backgroundColor={colors.mainTextColor}
-        />
-        <CustomView
-        borderColor={'transparent'}
-          onPress={() => {
-            setHeadingName('Sub Text Color');
-            setShowModal(true);
-          }}
-          heading={'Sub Text Color'}
-          backgroundColor={colors.subTextColor}
-        />
-
-        <TouchableOpacity
-          style={{...styles.buttonStyle, backgroundColor: colors.backgroundColor}}
-          activeOpacity={0.5}
-          onPress={() => saveThemeValue(1)}>
-          <Text style={{...styles.buttonTextStyle, color: colors.headingColor}}>
-            Save Changes
-          </Text>
-        </TouchableOpacity>
-    </View>
-
-        <Text style={{left: 15,marginTop:15,fontSize:20,fontFamily:fonts['Mofista'], color: colors.headingColor}}>
-          live preview
-        </Text>
-
-        <View style={{...styles.previewCard,borderColor:colors.subTextColor, backgroundColor: backgroundColor}}>
-          <View
-            style={{
-              width: '100%',
-              paddingVertical: 15,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.backgroundColor }}>
+      <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
+        <View style={{ marginHorizontal: 20 }}>
+          <View style={styles.topHeadingView}>
             <Text
               style={{
-                fontSize: 24,
-                color: headingColor,
-                fontFamily: fonts['Mofista'],
+                fontSize: 28,
+                color: colors.headingColor,
+                fontFamily: fonts.boldFont,
               }}>
               Settings
             </Text>
-
             <Entypo
               onPress={() => navigation.toggleDrawer()}
-              style={{fontSize: 24, color: headingColor}}
+              style={{ fontSize: 30,fontFamily:fonts.boldFont, color: colors.headingColor }}
               name={'menu'}
             />
           </View>
 
-          <Text style={{color: headingColor,fontSize:14,fontFamily:fonts['Mofista']}}>Profile</Text>
+          <View style={{ borderRadius: 5, backgroundColor: colors.cardColor, paddingHorizontal: 10 }}>
 
-          <View style={{...styles.cardview, backgroundColor: cardColor}}>
             <Text
               style={{
-                fontSize: 18,
-                left: 15,
-                color: mainTextColor,
-                fontFamily: fonts['Mofista'],
+                fontSize: 24,
+                marginTop: 15,
+                color: colors.headingColor,
+                fontFamily: fonts.regularFont,
               }}>
-              {'Projects'}
+              colours
             </Text>
+
+            <CustomView
+              borderColor={'transparent'}
+              onPress={() => {
+                setHeadingName('Main Color');
+                setShowModal(true);
+              }}
+              heading={'Main Color'}
+              backgroundColor={colors.backgroundColor}
+            />
+            <CustomView
+              borderColor={'#ffffff'}
+              onPress={() => {
+                setHeadingName('Secondary Color');
+                setShowModal(true);
+              }}
+              heading={'Secondary Color'}
+              backgroundColor={colors.cardColor}
+            />
+            <CustomView
+              borderColor={'transparent'}
+              onPress={() => {
+                setHeadingName('Title Color');
+                setShowModal(true);
+              }}
+              heading={'Title Color'}
+              backgroundColor={colors.headingColor}
+            />
+            <CustomView
+              borderColor={'transparent'}
+              onPress={() => {
+                setHeadingName('Main Text Color');
+                setShowModal(true);
+              }}
+              heading={'Main Text Color'}
+              backgroundColor={colors.mainTextColor}
+            />
+            <CustomView
+              borderColor={'transparent'}
+              onPress={() => {
+                setHeadingName('Sub Text Color');
+                setShowModal(true);
+              }}
+              heading={'Sub Text Color'}
+              backgroundColor={colors.subTextColor}
+            />
+
+            <TouchableOpacity
+              style={{ ...styles.buttonStyle, backgroundColor: colors.backgroundColor }}
+              activeOpacity={0.5}
+              onPress={() => saveThemeValue(1)}>
+              <Text style={{ ...styles.buttonTextStyle, color: colors.headingColor }}>
+                Save Changes
+              </Text>
+            </TouchableOpacity>
           </View>
+
+          <Text style={{ left: 1, marginTop: 15, fontSize: 20, fontFamily: fonts.boldFont, color: colors.headingColor }}>
+            live preview
+          </Text>
+
+          <View style={{ ...styles.previewCard, borderColor: colors.subTextColor, backgroundColor: backgroundColor }}>
+            <View
+              style={{
+                width: '100%',
+                paddingVertical: 15,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
+              <Text
+                style={{
+                  fontSize: 24,
+                  color: headingColor,
+                  fontFamily: fonts.boldFont,
+                }}>
+                Settings
+              </Text>
+
+              <Entypo
+                onPress={() => navigation.toggleDrawer()}
+                style={{ fontSize: 24,fontFamily:fonts.boldFont, color: headingColor }}
+                name={'menu'}
+              />
+            </View>
+
+            <Text style={{ color: headingColor, fontSize: 14, fontFamily: fonts.regularFont }}>Profile</Text>
+
+            <View style={{ ...styles.cardview, backgroundColor: cardColor }}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  left: 15,
+                  color: mainTextColor,
+                  fontFamily: fonts.regularFont,
+                }}>
+                {'Projects'}
+              </Text>
+            </View>
+          </View>
+          <Text style={{ left: 1, marginTop: 25, fontSize: 20, fontFamily: fonts.boldFont, color: colors.headingColor }}>
+            Select Font
+          </Text>
+          <View>
+            <CustomFontView
+              isChecked={isRoboto}
+
+              onPress={() => {
+                saveFont('Roboto: Roboto')
+              }}
+              heading={'Roboto: Roboto'}
+            />
+            <CustomFontView
+              isChecked={isOpenSans}
+
+              onPress={() => {
+                saveFont('Open Sans: Open Sans')
+              }}
+              heading={'Open Sans: Open Sans'}
+            />
+            <CustomFontView
+              isChecked={isLatto}
+              onPress={() => {
+                saveFont('Lato: Lato')
+              }}
+              heading={'Lato: Lato'}
+            />
+          </View>
+
+          {openModal()}
         </View>
-
-      
-
-        {openModal()}
-      </View>
-    </ScrollView>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -364,12 +512,12 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingVertical: 15,
     paddingHorizontal: 15,
-    borderWidth:1,
-    borderColor:'red',
-    borderStyle:'dotted',
+    borderWidth: 1,
+    borderColor: 'red',
+    borderStyle: 'dotted',
     marginTop: 15,
     //elevation: 1,
-    height: 150,
+    height: 170,
     // shadowColor: '#000',
     // shadowOffset: {width: 0, height: 1},
     // shadowOpacity: 0.3,
