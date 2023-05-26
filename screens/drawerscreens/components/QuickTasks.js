@@ -20,6 +20,8 @@ var db = openDatabase({name: 'UserDatabase.db'});
 
 const QuickTasks = ({onPress, isOpen}) => {
   const {...colors} = useContext(AuthContext);
+  const {...fonts} = useContext(AuthContext);
+
   const [isLoading, setIsLoading] = useState(false);
 
   const [data, setData] = useState([]);
@@ -67,7 +69,7 @@ const QuickTasks = ({onPress, isOpen}) => {
   };
 
   //editTaskName function will update selected task from table
-  const editTaskName = (taskId, taskno, task_status) => {
+  const editTaskName = (taskId, taskno, task_status,task_date) => {
     setIsLoading(true);
     var date = new Date().toLocaleString();
     const updatedArray = [...data]; // create a copy of the original array
@@ -81,7 +83,7 @@ const QuickTasks = ({onPress, isOpen}) => {
             taskToUpdate.task_name.toString(),
             taskno == 2 ? !task_status : false,
             true,
-            date.slice(0, 10),
+            taskno == 2 ? task_date : date.slice(0, 10),
             taskId,
           ],
           (tx, results) => {
@@ -117,7 +119,7 @@ const QuickTasks = ({onPress, isOpen}) => {
               width: '15%',
               left: 10,
               paddingVertical: 15,
-              fontFamily: fonts['Mofista'],
+              fontFamily: fonts.regularFont,
               fontSize: 22,
               color: colors.headingColor,
             }}>
@@ -128,7 +130,7 @@ const QuickTasks = ({onPress, isOpen}) => {
             style={{
               width: '70%',
               paddingVertical: 15,
-              fontFamily: fonts['Mofista'],
+              fontFamily: fonts.regularFont,
               fontSize: 22,
               color: colors.headingColor,
             }}>
@@ -136,7 +138,7 @@ const QuickTasks = ({onPress, isOpen}) => {
           </Text>
           <TouchableOpacity
             style={{paddingVertical: 9}}
-            onPress={() => editTaskName(item.task_id, 2, item.task_status)}>
+            onPress={() => editTaskName(item.task_id, 2, item.task_status,item.date)}>
             {item.task_status ? (
               <TickBox style={{bottom: 5}} height={30} width={30} />
             ) : (
@@ -156,6 +158,7 @@ const QuickTasks = ({onPress, isOpen}) => {
             value={item.task_name.toString()}
             style={{
               paddingVertical: 1,
+              fontFamily:fonts.regularFont,
               width: '80%',
               backgroundColor: 'transparent',
             }}
@@ -164,7 +167,7 @@ const QuickTasks = ({onPress, isOpen}) => {
           />
           <TouchableOpacity
             onPress={
-              () => editTaskName(item.task_id, 1, item.task_status)
+              () => editTaskName(item.task_id, 1, item.task_status,item.date)
               //   onPress={() => onSubmitEditText(item.task_id,1)
             }>
             <Feather style={{fontSize: 22}} name={'arrow-right'} />
@@ -182,10 +185,11 @@ const QuickTasks = ({onPress, isOpen}) => {
           style={{
             left: 5,
             width: '80%',
-            paddingVertical: 18,
+            paddingVertical: 5,
+            justifyContent:'center',
             paddingHorizontal: 5,
           }}>
-          <Text style={{...styles.headingStyle, color: colors.headingColor}}>
+          <Text style={{...styles.headingStyle,fontFamily:fonts.boldFont, color: colors.headingColor}}>
             {'Quick Tasks'}
           </Text>
         </TouchableOpacity>
@@ -202,16 +206,16 @@ const QuickTasks = ({onPress, isOpen}) => {
           {!isOpen ? (
             <Text
               style={{
-                fontSize: 22,
+                fontSize: 25,
                 fontWeight: 'bold',
-                fontFamily: fonts['Mofista'],
+                fontFamily:fonts.boldFont
               }}>
               {data.length}
             </Text>
           ) : (
             <Ionicons
               onPress={addProjectsItem}
-              style={{fontSize: 30, alignSelf: 'center'}}
+              style={{fontSize: 30,fontFamily:fonts.boldFont, alignSelf: 'center'}}
               name={'add'}
             />
           )}
@@ -244,7 +248,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: '98%',
   },
-  headingStyle: {fontSize: 18, fontFamily: fonts['Mofista']},
+  headingStyle: {fontSize: 22},
 
   viewstyle: {
     marginTop: 10,

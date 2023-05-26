@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   View,
   Text,
@@ -8,18 +8,19 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import {fonts} from '../../../utills/fonts';
+import { fonts } from '../../../utills/fonts';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
 import Box from '../../../images/ic_box.svg';
 import TickBox from '../../../images/ic_tickbox.svg';
-import {openDatabase} from 'react-native-sqlite-storage';
-import {AuthContext} from '../../../utills/Context';
+import { openDatabase } from 'react-native-sqlite-storage';
+import { AuthContext } from '../../../utills/Context';
 
-var db = openDatabase({name: 'UserDatabase.db'});
+var db = openDatabase({ name: 'UserDatabase.db' });
 
-const Negotiable = ({onPress, isOpen}) => {
-  const {...colors} = useContext(AuthContext);
+const Negotiable = ({ onPress, isOpen }) => {
+  const { ...colors } = useContext(AuthContext);
+  const {...fonts} = useContext(AuthContext);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -72,7 +73,7 @@ const Negotiable = ({onPress, isOpen}) => {
   };
 
   //editTaskName function will update selected task from table
-  const editTaskName = (taskId, taskno,task_status) => {
+  const editTaskName = (taskId, taskno, task_status, task_date) => {
     setIsLoading(true);
     var date = new Date().toLocaleString();
     const updatedArray = [...data]; // create a copy of the original array
@@ -86,7 +87,7 @@ const Negotiable = ({onPress, isOpen}) => {
             taskToUpdate.task_name.toString(),
             taskno == 2 ? !task_status : false,
             true,
-            date.slice(0, 10),
+            taskno == 2 ? task_date : date.slice(0, 10),
             taskId,
           ],
           (tx, results) => {
@@ -116,7 +117,7 @@ const Negotiable = ({onPress, isOpen}) => {
   };
 
   //renderItem function will check condtion and show ui design as desired
-  const renderItem = ({item, index}) => (
+  const renderItem = ({ item, index }) => (
     <>
       {item.task_edit_status ? (
         <View style={styles.viewstyle}>
@@ -126,7 +127,7 @@ const Negotiable = ({onPress, isOpen}) => {
               left: 10,
               paddingVertical: 15,
               fontSize: 22,
-              fontFamily: fonts['Mofista'],
+              fontFamily: fonts.regularFont,
               color: colors.headingColor,
             }}>
             {item.task_id}.
@@ -136,20 +137,20 @@ const Negotiable = ({onPress, isOpen}) => {
             style={{
               width: '70%',
               paddingVertical: 15,
-              fontFamily: fonts['Mofista'],
+              fontFamily: fonts.regularFont,
               fontSize: 22,
               color: colors.headingColor,
             }}>
             {item.task_name}
           </Text>
           <TouchableOpacity
-            style={{paddingVertical:9}}
-            onPress={() => editTaskName(item.task_id, 2,item.task_status)}>
+            style={{ paddingVertical: 9 }}
+            onPress={() => editTaskName(item.task_id, 2, item.task_status, item.date)}>
             {item.task_status ? (
-              <TickBox style={{bottom:5}} height={30} width={30} />
+              <TickBox style={{ bottom: 5 }} height={30} width={30} />
 
             ) : (
-              <Box style={{bottom:5}} height={30} width={30} />
+              <Box style={{ bottom: 5 }} height={30} width={30} />
 
             )}
           </TouchableOpacity>
@@ -166,6 +167,7 @@ const Negotiable = ({onPress, isOpen}) => {
             value={item.task_name.toString()}
             style={{
               paddingVertical: 1,
+              fontFamily:fonts.regularFont,
               width: '80%',
               backgroundColor: 'transparent',
             }}
@@ -174,10 +176,10 @@ const Negotiable = ({onPress, isOpen}) => {
           />
           <TouchableOpacity
             onPress={
-              () => editTaskName(item.task_id, 1,item.task_status)
+              () => editTaskName(item.task_id, 1, item.task_status, item.date)
               //   onPress={() => onSubmitEditText(item.task_id,1)
             }>
-            <Feather style={{fontSize: 22}} name={'arrow-right'} />
+            <Feather style={{ fontSize: 22 }} name={'arrow-right'} />
           </TouchableOpacity>
         </View>
       )}
@@ -186,10 +188,16 @@ const Negotiable = ({onPress, isOpen}) => {
 
   return (
     <View style={styles.container}>
-      <View style={{...styles.cardview, backgroundColor: colors.cardColor}}>
-      <TouchableOpacity onPress={onPress} style={{left:5,width: '80%', paddingVertical: 18,paddingHorizontal:5}}>
+      <View style={{ ...styles.cardview, backgroundColor: colors.cardColor }}>
+        <TouchableOpacity onPress={onPress} style={{
+          left: 5, 
+          width: '80%',
+          paddingVertical: 5,
+          justifyContent: 'center',
+          paddingHorizontal: 5,
+        }}>
 
-          <Text style={{...styles.headingStyle, color: colors.headingColor}}>
+          <Text style={{ ...styles.headingStyle, fontFamily:fonts.boldFont,color: colors.headingColor }}>
             {'Three Non-Negotiables'}
           </Text>
         </TouchableOpacity>
@@ -204,23 +212,23 @@ const Negotiable = ({onPress, isOpen}) => {
             alignItems: 'center',
           }}>
           {!isOpen ? (
-            <Text style={{fontSize:22,fontWeight:'bold',fontFamily:fonts['Mofista']}}>{data.length}</Text>
+            <Text style={{ fontSize: 25, fontWeight: 'bold', fontFamily:fonts.boldFont }}>{data.length}</Text>
           ) : (
             <Ionicons
               onPress={addProjectsItem}
-              style={{fontSize: 30,alignSelf:'center'}}
+              style={{ fontSize: 30, fontFamily:fonts.boldFont,alignSelf: 'center' }}
               name={'add'}
             />
           )}
         </View>
       </View>
 
-      <View style={{maxHeight: 300, marginTop: 10, marginBottom: 10}}>
+      <View style={{ maxHeight: 300, marginTop: 10, marginBottom: 10 }}>
         {isOpen ? (
           <FlatList
             data={data}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{paddingBottom: 10}}
+            contentContainerStyle={{ paddingBottom: 10 }}
             // inverted={true}
             renderItem={renderItem}
             keyExtractor={(item, index) => index.toString()}
@@ -241,7 +249,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: '98%',
   },
-  headingStyle: {fontSize: 22, fontFamily: fonts['Mofista']},
+  headingStyle: { fontSize: 22,  },
 
   viewstyle: {
     marginTop: 10,

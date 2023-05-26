@@ -54,6 +54,8 @@ const Home = ({navigation}) => {
   const [isQTasks, setIsQTasks] = useState(false);
 
   const {...colors} = useContext(AuthContext);
+  const {...fonts} = useContext(AuthContext);
+
   const {isLoading} = React.useContext(AuthContext);
 
 
@@ -141,7 +143,7 @@ getUserInfo()
       <View style={{marginHorizontal: 20}}>
         
         <View style={styles.mainCard}>
-          <Text style={{...styles.headingColor, color: colors.headingColor}}>
+          <Text style={{...styles.headingColor, fontFamily:fonts.boldFont,color: colors.headingColor}}>
             {!userName ? 'Katie’s Planner' : userName}
           </Text>
           <Entypo
@@ -151,7 +153,7 @@ getUserInfo()
           />
         </View>
 
-        <Text style={{...styles.subHeading, color: colors.headingColor}}>
+        <Text style={{...styles.subHeading,fontFamily:fonts.regularFont, color: colors.headingColor}}>
           Today
         </Text>
 

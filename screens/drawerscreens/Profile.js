@@ -5,7 +5,7 @@
  * @format
  */
 
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -40,8 +40,10 @@ import Loader from '../../components/Loader';
 var db = openDatabase({name: 'UserDatabase.db'});
 const Profile = ({navigation}) => {
   const [showModal, setShowModal] = useState(false);
-  const {...colors} = React.useContext(AuthContext);
-  const {setIsLoading} = React.useContext(AuthContext);
+  const {...colors} = useContext(AuthContext);
+  const {...fonts} = useContext(AuthContext);
+
+  const {setIsLoading} = useContext(AuthContext);
 
   const [loading, setLoading] = useState(false);
   const [userName, setUserName] = useState('');
@@ -179,7 +181,7 @@ const Profile = ({navigation}) => {
               style={{
                 fontSize: 22,
                 color: colors.headingColor,
-                fontFamily: fonts['Mofista'],
+                fontFamily: fonts.boldFont,
               }}>
               Edit Profile
             </Text>
@@ -207,10 +209,10 @@ const Profile = ({navigation}) => {
               }}>
               <Text
                 style={{
-                  fontSize: 24,
+                  fontSize: 22,
                   width: '34%',
                   color: '#000',
-                  fontFamily: fonts['Mofista'],
+                  fontFamily: fonts.regularFont,
                 }}>
                 Name :
               </Text>
@@ -229,6 +231,7 @@ const Profile = ({navigation}) => {
                   borderRadius: 10,
                   borderWidth: 1,
                   paddingVertical: 5,
+                  fontFamily:fonts.regularFont,
                   borderColor: '#000',
                   paddingLeft: 10,
                   color: '#000',
@@ -248,10 +251,10 @@ const Profile = ({navigation}) => {
               }}>
               <Text
                 style={{
-                  fontSize: 24,
+                  fontSize: 22,
                   width: '34%',
                   color: '#000',
-                  fontFamily: fonts['Mofista'],
+                  fontFamily: fonts.regularFont,
                 }}>
                 Password :
               </Text>
@@ -270,6 +273,7 @@ const Profile = ({navigation}) => {
                   borderRadius: 10,
                   borderWidth: 1,
                   paddingVertical: 5,
+                  fontFamily:fonts.regularFont,
                   borderColor: '#000',
                   paddingLeft: 10,
                   color: '#000',
@@ -289,10 +293,10 @@ const Profile = ({navigation}) => {
               }}>
               <Text
                 style={{
-                  fontSize: 24,
+                  fontSize: 22,
                   width: '34%',
                   color: '#000',
-                  fontFamily: fonts['Mofista'],
+                  fontFamily: fonts.regularFont,
                 }}>
                 Confirm :
               </Text>
@@ -309,6 +313,7 @@ const Profile = ({navigation}) => {
                   textAlign: 'left',
                   fontSize: 18,
                   borderRadius: 10,
+                  fontFamily:fonts.regularFont,
                   borderWidth: 1,
                   paddingVertical: 5,
                   borderColor: '#000',
@@ -327,7 +332,7 @@ const Profile = ({navigation}) => {
             activeOpacity={0.5}
             onPress={() => handleSubmitButton()}>
             <Text
-              style={{...styles.buttonTextStyle, color: colors.headingColor}}>
+              style={{...styles.buttonTextStyle,fontFamily:fonts.boldFont, color: colors.headingColor}}>
               Save Changes
             </Text>
           </TouchableOpacity>
